@@ -24,7 +24,7 @@ borrowRoutes.post("/", async (req, res) => {
     const book = await Book.findById(bookId);
 
     if (!book) {
-      throw new Error("No Book Found");
+       throw new Error("No Book Found");
     }
 
     if (book.copies < quantity) {
@@ -120,6 +120,4 @@ borrowRoutes.get("/", async (req, res) => {
   }
 });
 
-borrowRoutes.get("/", async (req, res) => {
-  res.json("Borrows Routes Paichi Vai!!!");
-});
+

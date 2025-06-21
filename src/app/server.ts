@@ -24,20 +24,7 @@ const boostrap = async () => {
 boostrap();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.listen(process.env.PORT, () => {
+app.listen(config.port, () => {
     console.log(`Express Basic Server Running Test!!`)
 });
 

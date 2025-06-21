@@ -25,6 +25,6 @@ const boostrap = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 boostrap();
-app_1.default.listen(process.env.PORT, () => {
+app_1.default.listen(9000, () => {
     console.log(`Express Basic Server Running Test!!`);
 });

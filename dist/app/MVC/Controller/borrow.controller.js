@@ -107,6 +107,3 @@ exports.borrowRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fu
         console.log("ERROR:", error);
     }
 }));
-exports.borrowRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json("Borrows Routes Paichi Vai!!!");
-}));

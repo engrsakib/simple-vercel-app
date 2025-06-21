@@ -19,25 +19,22 @@ const book_model_1 = require("../Model/book.model");
 const console_1 = require("console");
 exports.bookRoutes = express_1.default.Router();
 exports.createBookSchema = zod_1.default.object({
-    title: zod_1.default.string({ required_error: "Title is required" }),
-    author: zod_1.default.string({ required_error: "Author is required" }),
+    title: zod_1.default.string({ required_error: "Title is required" }).optional(),
+    author: zod_1.default.string({ required_error: "Author is required" }).optional(),
     genre: zod_1.default.enum(["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"], {
         required_error: "Genre is required",
         invalid_type_error: "Invalid genre",
-    }),
-    isbn: zod_1.default.string({ required_error: "ISBN is required" }),
+    }).optional(),
+    isbn: zod_1.default.string({ required_error: "ISBN is required" }).optional(),
     description: zod_1.default.string().optional(),
     copies: zod_1.default
         .number({ required_error: "Copies are required" })
-        .min(0, "Copies must be a non-negative integer"),
+        .min(0, "Copies must be a non-negative integer").optional(),
     available: zod_1.default.boolean().optional(),
 });
 // Zod Catch Error Handling
-exports.bookRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("BookRoutes Paichi Vai!!");
-}));
 //  Create Post On the server
-exports.bookRoutes.post("/createBook", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.bookRoutes.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const zodBody = yield exports.createBookSchema.parseAsync(req.body);
         const book = yield book_model_1.Book.create(zodBody);
@@ -60,7 +57,7 @@ exports.bookRoutes.post("/createBook", (req, res) => __awaiter(void 0, void 0, v
     }
 }));
 //  Get All Book
-exports.bookRoutes.get("/getAllBooks", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.bookRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filter = req.query.filter;
         const sortBy = req.query.sortBy || "createdAt";

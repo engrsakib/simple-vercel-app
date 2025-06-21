@@ -1,56 +1,65 @@
 import z from "zod";
 import express, { Request, Response } from "express";
-import { Book } from "../Model/book.model";
 
+import { Book } from "../Model/book.model";
+import { error } from "console";
 export const bookRoutes = express.Router();
 
 export const createBookSchema = z.object({
-  title: z.string({ required_error: "Title is required" }),
-  author: z.string({ required_error: "Author is required" }),
+  title: z.string({ required_error: "Title is required" }).optional(),
+  author: z.string({ required_error: "Author is required" }).optional(),
   genre: z.enum(
     ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
     {
       required_error: "Genre is required",
       invalid_type_error: "Invalid genre",
     }
-  ),
-  isbn: z.string({ required_error: "ISBN is required" }),
+  ).optional(),
+  isbn: z.string({ required_error: "ISBN is required" }).optional(),
   description: z.string().optional(),
   copies: z
     .number({ required_error: "Copies are required" })
-    .min(0, "Copies must be a non-negative integer"),
+    .min(0, "Copies must be a non-negative integer").optional(),
   available: z.boolean().optional(),
 });
 
-// Create a new Book
+
+
+
+
+// Zod Catch Error Handling
+
+
+
+//  Create Post On the server
+
 bookRoutes.post("/", async (req: Request, res: Response) => {
   try {
     const zodBody = await createBookSchema.parseAsync(req.body);
+
     const book = await Book.create(zodBody);
+    await book.save();
 
     res.status(201).json({
-      success: true,
-      message: "Successfully created book!",
-      data: book,
+      sucess: true,
+      message: "Sucessfully Data Created!!",
+      book: book,
     });
   } catch (error: any) {
-    // Handle Zod validation errors
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation Error",
-        errors: error.errors,
-      });
+    if (error.name === "zodError") {
+      return error;
     }
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong while creating the book.",
-      error: error?.message || error,
+
+    res.status(401).json({
+      sucess: false,
+      message: "Somethings is Wrongs",
+      error: error,
     });
   }
 });
 
-// Get all books (with filters, sorting, limit)
+//  Get All Book
+
 bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const filter = req.query.filter as string;
@@ -58,10 +67,10 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
     const sortOrder = (req.query.sort as string) === "desc" ? -1 : 1;
     const limit = parseInt(req.query.limit as string) || 10;
 
-    let query: any = {};
+    let query = {};
 
     if (filter) {
-      query.genre = filter;
+      query = { genre: filter };
     }
 
     const books = await Book.find(query)
@@ -74,88 +83,107 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
       data: books,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to get books", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to get books", error });
   }
 });
 
-// Get a specific book by ID
+// specifics book
+
 bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
   try {
     const id = req.params.bookId;
-    const book = await Book.findById(id);
 
-    if (!book) {
-      return res.status(404).json({
-        success: false,
-        message: "Book Not Found",
-      });
-    }
+    const book = await Book.findById({ _id: id });
 
-    res.json({
-      success: true,
+    res.status(201).json({
+      sucess: true,
       message: "Book retrieved successfully",
       data: book,
     });
+
+    if (!book) {
+      res.status(404).json({
+        sucess: false,
+        message: "Book Not Found",
+        
+      });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to get book", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to get book", error });
   }
 });
 
-// Update a book by ID
 bookRoutes.put("/:bookId", async (req: Request, res: Response) => {
   try {
     const id = req.params.bookId;
     const body = await createBookSchema.parseAsync(req.body);
 
-    const updatedDoc = await Book.findByIdAndUpdate(id, body, { new: true });
+    const updatedDoc = await Book.findByIdAndUpdate(id, body, { upsert: true, new: true });
 
-    if (!updatedDoc) {
-      return res.status(404).json({
-        success: false,
-        message: "No book found to update.",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Book updated successfully",
+    res.status(200).json({
+      sucess: true,
+      message: "Book updated successfull",
       data: updatedDoc,
     });
-  } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation Error",
-        errors: error.errors,
+
+    if (!updatedDoc) {
+      res.status(401).json({
+        sucess: false,
+        message: "NO DATA FOUND",
+        error: null,
       });
     }
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong while updating the book.",
-      error: error?.message || error,
-    });
-  }
-});
-
-// Delete a book by ID
-bookRoutes.delete("/:bookId", async (req: Request, res: Response) => {
-  try {
-    const id = req.params.bookId;
-    const deletedBook = await Book.findByIdAndDelete(id);
-
-    if (!deletedBook) {
-      return res.status(404).json({
-        success: false,
-        message: "Book not found to delete.",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: `Book with id ${id} deleted successfully!`,
-      data: deletedBook,
-    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to delete book", error });
+     console.log("Somethings Type is Error", error)
   }
 });
+
+
+
+// book Delete Opearations 
+
+
+bookRoutes.delete('/:bookId', async (req, res) => {
+
+
+  try {
+    
+
+
+    
+  const id = req.params.bookId;
+
+  const deleteBook = await Book.findOneAndDelete({_id:id})
+
+  res.status(404).json({
+    sucess:true,
+    message:`${id} bookId sucessfully deleleted!!1`,
+    data:deleteBook,
+  });
+
+  if(!deleteBook){
+     res.status(404).json({
+      sucess:false,
+      message:"Deleted Failed",
+      error,
+    })
+  }
+
+
+
+
+
+
+  } catch (error) {
+    console.log("ERROR", error)
+    
+  }
+
+})
+
+
+
