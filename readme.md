@@ -1,89 +1,123 @@
+# 📚 Library Management API
 
-       <!-- Project Name -->
-    <!--  Libary Management API   -->
+A RESTful API for managing library books, built with **Express.js**, **TypeScript**, and **MongoDB**.
 
+This API enables easy management of a library system, including adding, updating, borrowing books, and tracking borrow records. All book-related operations are supported via standard CRUD functionalities.
 
-This project is a Library Management RESTful API, developed using Express.js, TypeScript, and MongoDB.
-The application allows easy management of library books, such as adding new books, updating book details, borrowing books, and keeping records of borrowed books.
-All book-related operations can be managed through standard CRUD functionalities.
+---
 
+## 🚀 Features
 
+- **Add Books:** Create new book entries with title, author, genre, ISBN, and copies.
+- **View Books:** List all books with optional filtering, sorting, and limiting.
+- **View Single Book:** Retrieve a specific book's details by its ID.
+- **Update Books:** Edit book information using its ID.
+- **Delete Books:** Remove books from the library by ID.
+- **Borrow Books:** Borrow specified copies of a book with due date tracking.
+- **Borrow Summary:** View how many times each book was borrowed (admin report).
 
--------- Developed API Functionality------------------
+---
 
+## 🛠️ API Endpoints
 
-1. Book Create API:
+### 1. **Create Book**
+- **Description:** Add a new book to the library.
+- **Request:**  
+  - Fields: `title`, `author`, `genre`, `isbn`, `copies`
+- **Validation:** 
+  - Shows an error if any field is missing or invalid.
+  - Saves the book if data is valid.
 
-Add a new book to the library.
-It takes title, author, genre, ISBN, and copies.
-If any field is wrong, it shows an error.
-Saves the book if everything is okay
+---
 
+### 2. **Get All Books**
+- **Description:** Retrieve all books from the database.
+- **Features:** 
+  - Filtering, sorting, and limiting supported via query parameters.
+- **Response:**  
+  - Returns all book data with a success message.
 
+---
 
-2. Get All Books API:
+### 3. **Get Single Book**
+- **Description:** Fetch a book by its ID.
+- **Response:** 
+  - Returns book details if found.
+  - Shows an error if not found.
 
-Shows all books from the database.
-You can filter, sort, or limit the list.
-Useful to see all books in the library.
-Returns book data with success message.
+---
 
+### 4. **Update Book**
+- **Description:** Update a book's information using its ID.
+- **Request:** 
+  - Fields to update (e.g., title, author, copies).
+- **Response:** 
+  - Returns updated book data if successful.
+  - Shows error if book not found.
 
-3. Get Single Book API:
+---
 
-Shows one book using its ID.
-If the book is found, it returns details.
-If not found, it shows an error message.
-Used for viewing one book's info.
+### 5. **Delete Book**
+- **Description:** Delete a book using its ID.
+- **Response:** 
+  - Returns a success message if deleted.
+  - Shows error if book not found.
 
+---
 
-4.  Update Book API:
+### 6. **Borrow Book**
+- **Description:** Borrow a book from the library.
+- **Request:** 
+  - Fields: `bookId`, `quantity`, `dueDate`
+- **Validation:** 
+  - Error if not enough copies are available.
+  - Saves borrow info if valid.
 
-Update book info using book ID.
-You can change fields like copies or title.
-If book not found, shows error.
-Returns updated book data.
+---
 
-5. Delete Book API:
+### 7. **Borrow Summary**
+- **Description:** View a summary report of all borrowed books.
+- **Features:** 
+  - Displays how many times each book was borrowed.
+  - Uses MongoDB aggregation for statistics.
+  - Useful for admins.
 
-Delete a book using its ID.
-If book exists, it gets removed.
-If not, it shows an error.
-Returns a delete success message.
+---
 
-6.  Borrow Book API:
+## 📦 Assignment Submission
 
-User can borrow a book.
-It needs book ID, quantity, and due date.
-If not enough copies, shows error.
-Saves borrow info if valid.
+- **GitHub Repo:** [Add your repo link here]
+- **Vercel Deployment:** [Add your Vercel live link here]
+- **Video Explanation:** [Add your video link here]
+- **API Testing:** All APIs are tested using [Postman](https://www.postman.com/)
 
-7.  Borrow Summary API:
+---
 
-Shows report of borrowed books.
-Displays how many times each book was borrowed.
-Uses MongoDB aggregation to get results.
-Helpful for library admins.
+## 📝 How to Use
 
+1. **Clone the repository**
+2. **Install dependencies:**  
+   ```bash
+   npm install
+   ```
+3. **Configure environment variables** in `.env` file
+4. **Run the server:**  
+   ```bash
+   npm run dev
+   ```
+5. **Use Postman or any REST client to test the API endpoints**
 
+---
 
+## 💡 Tech Stack
 
+- **Backend:** Express.js, Node.js
+- **Language:** TypeScript
+- **Database:** MongoDB (with Mongoose)
+- **Validation:** Zod
 
--------- Assignment Submission ----------------
+---
 
+## 🙏 Thank you!
 
-1.  GitHub Repo Link = 
-
-2.  Vercel Deployment Link =
-
-3. Video Explainations Link =
-
-4. All API Working  (Using Postman Application)
-
-
-
-
-
-
-
-
+Feel free to contribute, raise issues, or fork the repository!
